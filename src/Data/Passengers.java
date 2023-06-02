@@ -17,7 +17,10 @@ public class Passengers {
     }
     public Passenger search(Passenger passenger) {
         try {
-            return passengersFile.search(0, passenger.username, passenger.password).get(0);
+            if(passenger.getPassword() == null)
+            return passengersFile.search(0, passenger.username).get(0);
+            else
+                return passengersFile.search(0, passenger.username , passenger.password).get(0);
         }catch (Exception e){
             return null;
         }
@@ -29,7 +32,7 @@ public class Passengers {
             return 0;
         }
     }
-    public boolean update(String value , String update , int start) throws IOException {
-      return passengersFile.update(value , start , update);
+    public void update(String value , String update , int start) throws IOException {
+        passengersFile.update(value, start, update);
     }
 }

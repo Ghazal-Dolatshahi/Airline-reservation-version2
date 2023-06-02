@@ -16,10 +16,9 @@ public class FlightWriter extends FileWriter <Flight> {
     }
 
     @Override
-    public boolean update(String value, int start, String update) throws IOException {
+    public void update(String value, int start, String update) throws IOException {
         super.update(value, start, update);
         FileWriter<Ticket> ticket = new FileWriter<>(Ticket.generator);
         ticket.update(value , start + 80 ,update);
-        return true;
     }
 }

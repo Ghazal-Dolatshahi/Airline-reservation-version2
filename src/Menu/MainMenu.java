@@ -31,6 +31,7 @@ public class MainMenu {
             int command = checkFormat.parseInteger(input.next());
             if(command != 0  && command > -1 &&  command < 4 ) {
                 Enums.MainMenu option = Enums.MainMenu.value(command);
+
                 switch (Objects.requireNonNull(option)) {
                     case SIGN_IN -> {signIn(dataBase , input);bool = false;}
                     case SIGN_UP -> {signUp(dataBase , input);bool = false;}
@@ -44,11 +45,15 @@ public class MainMenu {
      * <span style = "font-family : Times New Roman ; font-size :12px ;color:#1E90FF">Users enter their password and username and sign in </span>
      */
     public void signIn(DataBase database , Scanner input) throws IOException {
+
         printTitle("Sign in");
+
         System.out.print("Enter user name : ");
         String userName = input.next();
+
         System.out.print("Enter password : ");
         String password = input.next();
+
            if(!signInOption(userName , password , database , input))
                System.out.println("Not user found!");
 
@@ -66,12 +71,15 @@ public class MainMenu {
                 Passenger passenger = new Passenger(userName, password, "0");
                 Admin admin = new Admin(userName, password, "0");
                 passenger = database.passengers.search(passenger);
+
                 if (passenger != null) {
                     passengerMenu.userMenu(database, passenger, input);
                     return true;
+
                 } else if (database.admins.search(admin) != null) {
                     adminMenu.userMenu(database, admin, input);
                     return true;
+
                 }else
                 return false;
             }
@@ -80,18 +88,24 @@ public class MainMenu {
      * <span style = "font-family : Times New Roman ; font-size :12px ;color:#1E90FF">Each passenger chooses her/his password and username and sign up </span>
      */
     public void signUp(DataBase dataBase , Scanner input) throws IOException {
+
         printTitle("Sign up");
+
         System.out.print("Enter user name : ");
         String userName = input.next();
+
         System.out.print("Enter password : ");
         String password = input.next();
-        if (checkValid(userName, password , dataBase)) {
+
+        if (checkValid(userName, dataBase)) {
             Passenger passenger = new Passenger(userName, password, "0");
             dataBase.passengers.write(passenger);
             System.out.println("Your sign up was successful ✔");
+
         }else{
             System.out.println("This passenger exist");
         }
+
        menu(dataBase , input);
 
     }
@@ -101,7 +115,7 @@ public class MainMenu {
      * @param text the text we want to print
      */
     public static void printTitle(String text){
-        System.out.println("\033[94m---------- ✈ \u001b[0m " + text + " \033[94m✈ -------------\u001b[0m");
+        System.out.println("\033[94m---------- ✈ \u001b[0m " + text + " \033[94m ✈ -------------\u001b[0m");
 
     }
 
@@ -111,9 +125,12 @@ public class MainMenu {
      * @param password that entered by user
      * @return true if a user with this profile is not found , otherwise return false
      */
-    public boolean checkValid(String userName , String password , DataBase dataBase){
-        Passenger passenger = new Passenger(userName , password , null);
-        Admin admin = new Admin(userName , password , null);
-        return (dataBase.passengers.search(passenger) == null) && (dataBase.admins.search(admin) == null) ;
+    public boolean checkValid(String userName , DataBase dataBase){
+
+        Passenger passenger = new Passenger(userName , null , null);
+        Admin admin = new Admin(userName , null , null);
+
+        return (dataBase.passengers.search(passenger) == null) && (dataBase.admins.search(admin) == null);
+
     }
 }

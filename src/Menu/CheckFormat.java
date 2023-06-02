@@ -14,14 +14,14 @@ public class CheckFormat {
     public Integer parseInteger(String str) {
 
         if (str == null || str.length() == 0) {
-            return 0;
+            return -1;
         }
         try {
 
             return Integer.parseInt(str);
 
         } catch (NumberFormatException e) {
-            return 0;
+            return -1;
         }
     }
     /**

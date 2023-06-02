@@ -17,12 +17,13 @@ public class FlightField {
     String time;
     String price;
     String seats;
+
     do {
         System.out.print("FlightId : ");
         flightId = input.next();
     } while (dataBase.flights.search(0 ,flightId).size() != 0);
     do {
-        System.out.print(" Origin : ");
+        System.out.print("Origin : ");
         origin = input.next();
     } while (!checkFormat.checkLetter(origin));
     do {
@@ -30,19 +31,19 @@ public class FlightField {
         destination = input.next();
     } while (!checkFormat.checkLetter(destination) || destination.equals(origin));
     do {
-        System.out.print(" Date : ");
+        System.out.print("Date (Format is yyyy/mm/dd): ");
         date = input.next();
     } while (!checkFormat.checkDate(date));
     do {
-        System.out.print(" Time : ");
+        System.out.print("Time (Format is --:--): ");
         time = input.next();
     } while (!checkFormat.checkTime(time));
     do {
-        System.out.print(" Price : ");
+        System.out.print("Price : ");
         price = input.next();
     } while (checkFormat.parseInteger(price) == null || checkFormat.parseInteger(price) < 0);
     do {
-        System.out.print(" Seats : ");
+        System.out.print("Seats : ");
         seats = input.next();
     } while (checkFormat.parseInteger(seats) == null || checkFormat.parseInteger(seats) < 0);
 
@@ -52,6 +53,7 @@ public class FlightField {
      * get flight id and check the format
      */
     public String flightId( Scanner input , DataBase dataBase) {
+
         while (true) {
             System.out.print("New FlightId is: ");
             String flightId = input.next();
@@ -66,6 +68,7 @@ public class FlightField {
      * @param oldFlight the flight that admin wants to update it
      */
     public String origin(Flight oldFlight , Scanner input){
+
         while (true) {
             System.out.print("New Origin is: ");
             String origin = input.next();
@@ -78,9 +81,10 @@ public class FlightField {
      * @param oldFlight the flight that admin wants to update it
      */
     public String destination(Flight oldFlight , Scanner input){
+
         while (true) {
-            String destination = input.next();
             System.out.print("New Destination is: ");
+            String destination = input.next();
             if(!Objects.equals(destination, oldFlight.getOrigin()) && checkFormat.checkLetter(destination))
        return destination;
          }
@@ -89,6 +93,7 @@ public class FlightField {
      * get date and check the format
      */
     public String date(Scanner input){
+
         while (true) {
             System.out.print("New Date is: ");
             String date = input.next();
@@ -100,6 +105,7 @@ public class FlightField {
      * get time  and check the format
      */
     public String time(Scanner input){
+
         while (true) {
             System.out.print("New Time is: ");
             String time = input.next();
@@ -111,6 +117,7 @@ public class FlightField {
      * get price and check the format
      */
     public String price(Scanner input){
+
         while (true) {
             System.out.print("New Price is: ");
             String price = input.next();
@@ -122,6 +129,7 @@ public class FlightField {
      * get the number of seats and check the format
      */
     public String seats(Scanner input){
+
         while (true) {
             System.out.print("New Seats is: ");
             String seats = input.next();

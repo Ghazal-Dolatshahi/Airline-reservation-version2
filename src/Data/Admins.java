@@ -10,22 +10,16 @@ public class Admins {
             defaultAdmin();
         }
     }
-    public long searchIndex(int start , String value) {
-        try {
-            return adminsFile.searchIndex(start,value);
-        }catch (Exception e){
-            return 0;
-        }
-    }
     public Admin search(Admin admin) {
         try {
-            return adminsFile.search(0, admin.username, admin.password).get(0);
+            return adminsFile.search(0, admin.username).get(0);
         } catch (Exception exception) {
             return null;
         }
     }
 
     public void defaultAdmin() throws IOException {
+
         Admin admin = new Admin("admin", "2004", "0");
         adminsFile.write(admin);
     }

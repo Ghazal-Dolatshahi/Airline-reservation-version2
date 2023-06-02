@@ -20,8 +20,8 @@ public class Tickets {
         ticketsFile.write(ticket);
 
     }
-    public boolean remove(Ticket ticket) throws IOException {
-        return ticketsFile.remove(String.valueOf(ticket.getTicketId()) , 0 );
+    public void remove(Ticket ticket) throws IOException {
+        ticketsFile.remove(String.valueOf(ticket.getTicketId()), 0);
     }
     public int findMaxId() throws IOException {
         String temp;

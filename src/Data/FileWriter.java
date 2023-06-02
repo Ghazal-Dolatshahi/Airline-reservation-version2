@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class FileWriter <E> {
     private final Generator<E> generator;
     private final RandomAccessFile file;
+
     public FileWriter(Generator<E> generator) throws FileNotFoundException {
         this.generator = generator;
       this.file = new RandomAccessFile(generator.fileAddress(), "rw");
@@ -80,12 +81,13 @@ public class FileWriter <E> {
      * @return the initial byte to start record that found  from the file
      */
     public long searchIndex(int start , String value) throws IOException {
+
         for (long i = 0; i < file.length(); i += generator.recordSize()) {
                 if (value.equals(fixStringToRead(start + i))) {
                    return  i;
                 }
             }
-        return 0;
+        return -1;
     }
 
     /**
@@ -121,8 +123,10 @@ public class FileWriter <E> {
      * @param foundElement the element that we want to remove it from the file
      */
     public void removeOption(E foundElement) throws IOException {
+
           for (long i = 0; i < file.length(); i += generator.recordSize()) {
               if (read(i).equals(foundElement)) {
+
                   for (long k = i; k < file.length() - generator.recordSize(); k += generator.recordSize()) {
                       for (long j = k; j < generator.recordSize() + k; j += 40) {
                           String data = fixStringToRead(j + generator.recordSize());
@@ -136,14 +140,17 @@ public class FileWriter <E> {
     }
 
     /**
-     *<span style = "font-family : Times New Roman ; font-size :12px ;color:#1E90FF"> update from file</span>
-     * @param value the value that we want to update it
+     * <span style = "font-family : Times New Roman ; font-size :12px ;color:#1E90FF"> update from file</span>
+     *
+     * @param value  the value that we want to update it
      * @param start  the initial byte to start reading from the file
      * @param update the value to replace the previous value
      */
-    public boolean update(String value , int start, String update) throws IOException {
+    public void update(String value , int start, String update) throws IOException {
+
         if (search(start, value).size() != 0) {
             E foundElement = search(start, value).get(0);
+
             if (foundElement instanceof Flight) {
                 FlightWriter flightWriter = new FlightWriter(Ticket.generator);
                 flightWriter.update(value, start, update);
@@ -154,9 +161,7 @@ public class FileWriter <E> {
                         file.writeChars(fixStringToWrite(update));
                     }
                 }
-                return true;
-        }else
-         return false;
+        }
     }
 
     /**
@@ -165,6 +170,7 @@ public class FileWriter <E> {
      * @return string in the correct format
      */
     static String fixStringToWrite(String str) {
+
         StringBuilder strBuilder = new StringBuilder(str);
         while (strBuilder.length() < 20)
             strBuilder.append(" ");
@@ -176,7 +182,8 @@ public class FileWriter <E> {
      * @param start  the initial byte to start reading from the file
      * @return string in the correct format
      */
-     public  String fixStringToRead(long start) throws IOException {
+     public String fixStringToRead(long start) throws IOException {
+
         StringBuilder strBuilder = new StringBuilder();
         file.seek(start);
         for(long i = 0 ; i < 20 ; i++){

@@ -15,14 +15,14 @@ public class Flights {
         return flightsFile;
     }
 
-    public ArrayList<Flight> search(int start , String...values) {
+    public ArrayList<Flight> search(int start ,String...values) {
         try {
             return flightsFile.search(start,values);
         }catch (Exception e){
             return null;
         }
     }
-    public long searchIndex(int start , String value) {
+    public long searchIndex(int start ,String value) {
         try {
             return flightsFile.searchIndex(start,value);
         }catch (Exception e){

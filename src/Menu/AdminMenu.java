@@ -14,10 +14,12 @@ public class AdminMenu extends PassengerMenu{
 
     @Override
     public void userMenu(DataBase dataBase, Passenger passenger, Scanner input) throws IOException {
+
         boolean bool = true;
         while(bool) {
             System.out.println("passenger or admin ?");
             String choose = input.next();
+
             switch (choose) {
                 case "passenger" -> {super.userMenu(dataBase, passenger, input); bool = false;}
                 case "admin" -> {adminMenu(dataBase , input) ;bool = false;}
@@ -26,6 +28,7 @@ public class AdminMenu extends PassengerMenu{
         }
     }
     public void adminMenu(DataBase dataBase , Scanner input) throws IOException {
+
         boolean bool = true;
         while (bool) {
             MainMenu.printTitle("Admin menu");
@@ -33,6 +36,7 @@ public class AdminMenu extends PassengerMenu{
             int command = checkFormat.parseInteger(input.next());
             if (command < 5 && command > -1) {
                 Enums.AdminMenu option = Enums.AdminMenu.value(command);
+
                 switch (Objects.requireNonNull(option)) {
                     case SIGN_OUT -> bool = false;
                     case ADD -> add(input, dataBase);
@@ -50,6 +54,7 @@ public class AdminMenu extends PassengerMenu{
      * @see Menu.FlightField
      */
     public void add(Scanner input, DataBase dataBase) throws IOException {
+
         MainMenu.printTitle("Add Flight");
         Flight newFlight = flightField.field(input , dataBase);
         dataBase.flights.write(newFlight);
@@ -60,6 +65,7 @@ public class AdminMenu extends PassengerMenu{
      *<span style = "font-family : Times New Roman ; font-size :12px ;color:#1E90FF">Remove flight base on flight id</span>
      */
     public void remove(Scanner input, DataBase dataBase) throws IOException {
+
         MainMenu.printTitle("Remove Flight");
         System.out.print("Flight id :");
         String flightId = input.next();
@@ -73,6 +79,7 @@ public class AdminMenu extends PassengerMenu{
      *<span style = "font-family : Times New Roman ; font-size :12px ;color:#1E90FF">Update each field of flight</span>
      */
     public void update(Scanner input, DataBase dataBase) throws IOException {
+
         MainMenu.printTitle("Update Flight");
         System.out.println("Enter the flight id:");
         String flightId = input.next();
@@ -88,6 +95,7 @@ public class AdminMenu extends PassengerMenu{
      */
     public boolean updateOption(String flightId , DataBase dataBase , Scanner input) throws IOException {
         ArrayList<Flight> flights = dataBase.flights.search(0 , flightId);
+
         if(flights.size() != 0) {
             Flight oldFlight = dataBase.flights.search(0 ,flightId).get(0);
             return chooseField(input, oldFlight, dataBase);
@@ -107,6 +115,7 @@ public class AdminMenu extends PassengerMenu{
             int command = checkFormat.parseInteger(input.next());
             if (command > 0 && command < 8) {
                 FlightField option = FlightField.value(command);
+
                 switch (Objects.requireNonNull(option)) {
                     case FLIGHT_ID -> dataBase.flights.update(oldFlight.getFlightId(), flightField.flightId(input , dataBase) , 0 );
                     case ORIGIN -> dataBase.flights.update(oldFlight.getOrigin() , flightField.origin(oldFlight,input),40);
@@ -126,8 +135,10 @@ public class AdminMenu extends PassengerMenu{
      *<span style = "font-family : Times New Roman ; font-size :12px ;color:#1E90FF">Show flight schedules</span>
      */
     public void flightSchedules(DataBase dataBase) throws IOException {
+
         System.out.println("FlightId \t Origin \tDestination Time \t Seats \t    Price \t      Date");
         System.out.println("-".repeat(100));
+
         for (int i = 0; i < dataBase.flights.getFlightsFile().getFile().length(); i += dataBase.flights.getFlightsFile().getGenerator().recordSize()) {
             System.out.println(dataBase.flights.getFlightsFile().read(i));
             System.out.println("-".repeat(100));
