@@ -1,13 +1,40 @@
 package Data;
 
-import java.util.Objects;
 public class Admin extends Passenger {
 
     public Admin(String username, String password, String charge) {
         super(username, password, charge);
     }
 
-    public boolean similar(Admin admin){
-        return (Objects.equals(admin.getPassword(), "2004") && Objects.equals(admin.getUsername(), "admin"));
-    }
+    static Generator<Admin> generator = new Generator<>() {
+        @Override
+        public Admin generateToRead(String... values) {
+            return new Admin(
+                    values[0],
+                    values[1],
+                    values[2]
+            );
+        }
+
+        @Override
+        public String generateToWrite(Admin element) {
+            String str = "";
+            StringBuilder strBuilder = new StringBuilder(str);
+            strBuilder.append(FileWriter.fixStringToWrite(element.getUsername()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getPassword()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getCharge()));
+
+            return strBuilder.substring(0);
+        }
+
+        @Override
+        public String fileAddress() {
+            return "Admin file.dat";
+        }
+
+        @Override
+        public int recordSize() {
+            return 120;
+        }
+    };
 }

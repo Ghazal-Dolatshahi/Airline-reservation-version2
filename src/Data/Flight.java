@@ -1,15 +1,25 @@
 package Data;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.Objects;
+
 public class Flight {
-    private String flightId;
-    private String origin;
-    private String destination;
-    private String time;
-    private String seats;
-    private String price;
-    private String date;
+    private final String flightId;
+    private final String origin;
+    private final String destination;
+    private final String time;
+    private final String seats;
+    private final String price;
+    private final String date;
+
+    public Flight(String flightId, String origin, String destination, String date, String time, String price, String seats) {
+        this.flightId = flightId;
+        this.origin = origin;
+        this.destination = destination;
+        this.date = date;
+        this.time = time;
+        this.price = price;
+        this.seats = seats;
+    }
 
     public String getOrigin() {
         return origin;
@@ -34,54 +44,62 @@ public class Flight {
     public String getSeats() {
         return seats;
     }
-
-    public void setSeats(String seats) {
-        this.seats = seats;
-    }
-
     public String getFlightId() {
         return flightId;
     }
 
-    public Flight(String flightId, String origin, String destination, String date, String time, String price, String seats) {
-        this.flightId = flightId;
-        this.origin = origin;
-        this.destination = destination;
-        this.date = date;
-        this.time = time;
-        this.price = price;
-        this.seats = seats;
-    }
-    public boolean similar(Flight newflight) {
+     static Generator<Flight> generator = new Generator<>() {
+        @Override
+        public Flight generateToRead(String... values) {
+            return new Flight(
+                    values[0],
+                    values[1],
+                    values[2],
+                    values[3],
+                    values[4],
+                    values[5],
+                    values[6]
+            );
+        }
+        @Override
+        public String generateToWrite(Flight element) {
+            String str = "";
+            StringBuilder strBuilder = new StringBuilder(str);
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlightId()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getOrigin()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getDestination()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getDate()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getTime()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getPrice()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getSeats()));
 
-            return (newflight.getOrigin() == null || newflight.getOrigin().equals(this.getOrigin())) &&
-                    (newflight.getDestination() == null || newflight.getDestination().equals(this.getDestination())) &&
-                    (newflight.getDate() == null || newflight.getDate().equals(this.getDate())) &&
-                    (newflight.getTime() == null || newflight.getTime().equals(this.getTime())) &&
-                    (newflight.getPrice() == null || newflight.getPrice().equals(this.getPrice())) &&
-                    (newflight.getSeats() == null || newflight.getSeats().equals(this.getSeats())) &&
-                    (newflight.getFlightId() == null || newflight.getFlightId().equals(this.getFlightId()))
-                    ;
+            return strBuilder.substring(0);
+        }
+        @Override
+        public String fileAddress() {
+            return "Flight file.dat";
+        }
+        @Override
+        public int recordSize() {
+            return 280;
+        }
+    };
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return Objects.equals(flightId, flight.flightId) && Objects.equals(origin, flight.origin) && Objects.equals(destination, flight.destination) && Objects.equals(time, flight.time) && Objects.equals(seats, flight.seats) && Objects.equals(price, flight.price) && Objects.equals(date, flight.date);
     }
 
-    public void update(Flight newFlight) {
-        this.flightId = newFlight.flightId;
-        this.origin = newFlight.origin;
-        this.destination = newFlight.destination;
-        this.date = newFlight.date;
-        this.time = newFlight.time;
-        this.price = newFlight.price;
-        this.seats = newFlight.seats;
+    @Override
+    public int hashCode() {
+        return Objects.hash(flightId, origin, destination, time, seats, price, date);
     }
 
     @Override
     public String toString() {
-        return Arrays.stream(this.getClass().getDeclaredFields()).map(field -> {
-            try {
-                return field.get(this) + "\t   \u001b[35m|\u001b[0m \t";
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.joining())+  "\u001b[35m-\u001b[0m".repeat(109);
+        return
+                flightId+ "\t\t" + origin+"\t\t" + destination+"\t\t" + time+"\t\t" + seats+ "\t\t" + price+ "\t\t" + date + "\t\t" ;
     }
-    }
+}

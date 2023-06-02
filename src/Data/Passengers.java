@@ -1,16 +1,35 @@
 package Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 public class Passengers {
-    private final ArrayList<Passenger> passengersList;
-    public Passengers() {
-        passengersList = new ArrayList<>();
+   private final FileWriter<Passenger> passengersFile = new FileWriter<>(Passenger.generator);
+
+    public Passengers() throws FileNotFoundException {
     }
 
-    public Passenger search(Passenger passenger){
-            List<Passenger> passenger1 = (passengersList.stream().filter(passengers -> passengers.similar(passenger))).toList();
-        return passenger1.size() > 0 ? passenger1.get(0) : null;
+    public FileWriter<Passenger> getPassengersFile() {
+        return passengersFile;
     }
-    public void add(Passenger passenger){passengersList.add(passenger);}
+
+    public void write(Passenger passenger) throws IOException {
+        passengersFile.write(passenger);
+    }
+    public Passenger search(Passenger passenger) {
+        try {
+            return passengersFile.search(0, passenger.username, passenger.password).get(0);
+        }catch (Exception e){
+            return null;
+        }
+    }
+    public long searchIndex(int start , String value) {
+        try {
+            return passengersFile.searchIndex(start,value);
+        }catch (Exception e){
+            return 0;
+        }
+    }
+    public boolean update(String value , String update , int start) throws IOException {
+      return passengersFile.update(value , start , update);
+    }
 }

@@ -1,27 +1,33 @@
 package Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 public class Admins {
-    private final ArrayList<Admin> adminList;
+  private final FileWriter<Admin> adminsFile = new FileWriter<>(Admin.generator);
 
-    public Admins() {
-        this.adminList = new ArrayList<>();
-        defaultAdmin();
+    public Admins() throws IOException {
+        if (adminsFile.getFile().length() == 0) {
+            defaultAdmin();
+        }
     }
-
+    public long searchIndex(int start , String value) {
+        try {
+            return adminsFile.searchIndex(start,value);
+        }catch (Exception e){
+            return 0;
+        }
+    }
     public Admin search(Admin admin) {
-
-        List<Admin> admins1 = (adminList.stream()
-                .filter(admins -> admins.similar(admin))).toList();
-        return admins1.size() > 0 ? admins1.get(0) : null;
-
+        try {
+            return adminsFile.search(0, admin.username, admin.password).get(0);
+        } catch (Exception exception) {
+            return null;
+        }
     }
 
-    public void defaultAdmin() {
-        Admin admin1 = new Admin("admin", "2004", "0");
-        adminList.add(admin1);
+    public void defaultAdmin() throws IOException {
+        Admin admin = new Admin("admin", "2004", "0");
+        adminsFile.write(admin);
     }
 }
 

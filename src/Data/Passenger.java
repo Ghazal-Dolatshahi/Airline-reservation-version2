@@ -1,13 +1,21 @@
 package Data;
 
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class Passenger {
+public class Passenger{
     protected String username;
     protected String password;
     protected String charge;
+
+    public Passenger(String username, String password, String charge) {
+        this.username = username;
+        this.password = password;
+        this.charge = charge;
+    }
+
+    public Passenger(String value) {
+        this.username = value;
+    }
 
     public String getUsername() {
         return username;
@@ -17,35 +25,52 @@ public class Passenger {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getCharge() {
         return charge;
     }
 
-    public void setCharge(String charge) {
-        this.charge = charge;
-    }
+    static Generator<Passenger> generator = new Generator<>() {
+        @Override
+        public Passenger generateToRead(String... values) {
+            return new Passenger(
+                    values[0],
+                    values[1],
+                    values[2]
+            );
+        }
 
-    public Passenger(String username, String password, String charge) {
-        this.username = username;
-        this.password = password;
-        this.charge = charge;
-    }
+        @Override
+        public String generateToWrite(Passenger element) {
+            String str = "";
+            StringBuilder strBuilder = new StringBuilder(str);
+            strBuilder.append(FileWriter.fixStringToWrite(element.getUsername()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getPassword()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getCharge()));
 
-    public boolean similar(Passenger passenger){
-        return (Objects.equals(passenger.getPassword(), this.getPassword()) && Objects.equals(passenger.getUsername(), this.getUsername()));
-    }
+            return strBuilder.substring(0);
+        }
+
+        @Override
+        public String fileAddress() {
+            return "Passenger file.dat";
+        }
+
+        @Override
+        public int recordSize() {
+            return 120;
+        }
+    };
+
     @Override
-    public String toString() {
-        return Arrays.stream(this.getClass().getDeclaredFields()).map(field -> {
-            try {
-                return field.get(this) + "\t\t";
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.joining());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Passenger passenger = (Passenger) o;
+        return Objects.equals(username, passenger.username) && Objects.equals(password, passenger.password) && Objects.equals(charge, passenger.charge);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password, charge);
     }
 }

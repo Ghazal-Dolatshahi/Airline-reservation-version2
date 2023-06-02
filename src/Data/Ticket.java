@@ -1,13 +1,16 @@
 package Data;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
+import java.util.Objects;
 public class Ticket {
-    private final int ticketId;
-    private static int counter = 1000;
+    private final int ticketId ;
     private final Passenger passenger;
     private final Flight flight;
+
+    public Ticket(int ticketId, Passenger passenger, Flight flight) {
+        this.passenger = passenger;
+        this.flight = flight;
+        this.ticketId = ticketId;
+    }
 
     public int getTicketId() {
         return ticketId;
@@ -20,42 +23,61 @@ public class Ticket {
     public Flight getFlight() {
         return flight;
     }
+    static Generator<Ticket> generator = new Generator<>() {
+        @Override
+        public Ticket generateToRead(String... values) {
+            return new Ticket(
+                    Integer.parseInt(values[0]),
+                    new Passenger(values[1]),
+                    new Flight(values[2], values[3], values[4], values[5], values[6], values[7], values[8])
+            );
+        }
 
-    public Ticket(Passenger passenger, Flight flight) {
-        this.passenger = passenger;
-        this.flight = flight;
-        this.ticketId = counter++;
+        @Override
+        public String generateToWrite(Ticket element) {
+            String str = "";
+            StringBuilder strBuilder = new StringBuilder(str);
+            strBuilder.append(FileWriter.fixStringToWrite(String.valueOf(element.getTicketId())));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getPassenger().getUsername()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlight().getFlightId()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlight().getOrigin()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlight().getDestination()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlight().getDate()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlight().getTime()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlight().getPrice()));
+            strBuilder.append(FileWriter.fixStringToWrite(element.getFlight().getSeats()));
+
+            return strBuilder.substring(0);
+        }
+
+        @Override
+        public String fileAddress() {
+            return "Ticket file.dat";
+        }
+
+        @Override
+        public int recordSize() {
+            return 360;
+        }
+    };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ticket ticket = (Ticket) o;
+        return ticketId == ticket.ticketId && Objects.equals(passenger, ticket.passenger) && Objects.equals(flight, ticket.flight);
     }
 
-    public Ticket(int ticketId, Passenger passenger, Flight flight) {
-        this.passenger = passenger;
-        this.flight = flight;
-        this.ticketId = ticketId;
+    @Override
+    public int hashCode() {
+        return Objects.hash(ticketId, passenger, flight);
     }
-
-    public boolean similar(Ticket newTicket) {
-        return (((newTicket.getFlight().equals(this.getFlight())) || (newTicket.getFlight().getFlightId()== null) || (newTicket.getFlight().getFlightId().equals(this.getFlight().getFlightId()))||
-                 (newTicket.getFlight() == null)) ||
-                ((newTicket.getPassenger().equals(this.getPassenger())) || (newTicket.getPassenger() == null)) &&
-                        ((newTicket.getTicketId() == this.getTicketId() || newTicket.getTicketId() == 0)));
-    }
-
+    @Override
     public String toString() {
-        return Arrays.stream(this.getClass().getDeclaredFields()).map(field -> {
-            try {
-                return field.get(this) + "\t\t";
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.joining());
+        return
+            ticketId + "\t\t\t" + passenger.getUsername() + "\t\t\t" + flight.getFlightId() + "\t\t\t" + flight.getOrigin() + "\t\t\t" +
+                    flight.getDestination()+ "\t\t\t" + flight.getTime() + "\t\t\t" + flight.getSeats() + "\t\t\t" + flight.getPrice() +
+                    "\t\t\t" + flight.getDate() + "\t\t\t" ;
     }
-//        System.out.printf("\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-12s\u001b[35m|\u001b[0m%-12s\u001b[35m|\u001b[0m%-8s\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-8s\u001b[35m|\u001b[0m%-50s %n", "TicketId", "FlightId", "Origin", "Destination", "Date", "Time", "Price", "Seats", "Explanation");
-
-//        for (int i = 0; i < ticketL.size(); i++) {
-//            if (Objects.equals(database.tickets.ticket.get(i).getPassenger().getUserName(), userName)) {
-//                System.out.printf("\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-12s\u001b[35m|\u001b[0m%-12s\u001b[35m|\u001b[0m%-8s\u001b[35m|\u001b[0m%-10s\u001b[35m|\u001b[0m%-8s\u001b[35m|\u001b[0m%-50s %n", database.tickets.ticket.get(i).getTicketId(),
-//                        database.tickets.ticket.get(i).getFlight().getFlightId(), database.tickets.ticket.get(i).getFlight().getOrigin(),
-//                        database.tickets.ticket.get(i).getFlight().getDestination(), database.tickets.ticket.get(i).getFlight().getDate(),
-//                        database.tickets.ticket.get(i).getFlight().getTime(), database.tickets.ticket.get(i).getFlight().getPrice(),
-//                        database.tickets.ticket.get(i).getFlight().getSeats(), database.tickets.ticket.get(i).getExplanation());
-            }
+}

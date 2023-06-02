@@ -1,36 +1,38 @@
 package Data;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 public class Tickets {
-    private final ArrayList<Ticket> ticketData;
-    public Tickets()
-    {
-        this.ticketData = new ArrayList<>();
+    FileWriter<Ticket> ticketsFile = new FileWriter<>(Ticket.generator);
+
+    public Tickets() throws FileNotFoundException {
     }
 
-    public ArrayList<Ticket> search(Ticket newTicket) {
-        return (ArrayList<Ticket>) ticketData.stream().filter(ticket -> ticket.similar(newTicket)).collect(Collectors.toList());
+    public ArrayList<Ticket> search(int start ,String... value) {
+        try {
+            return ticketsFile.search(start, value);
+        }catch (Exception e){
+            return null;
+        }
     }
 
-    public void add(Ticket ticket) {
-       ticketData.add(ticket);
+    public void write(Ticket ticket) throws IOException {
+        ticketsFile.write(ticket);
 
     }
-    public boolean remove(Ticket ticket)
-    {
-       return ticketData.removeIf(t -> t.similar(ticket));
+    public boolean remove(Ticket ticket) throws IOException {
+        return ticketsFile.remove(String.valueOf(ticket.getTicketId()) , 0 );
     }
+    public int findMaxId() throws IOException {
+        String temp;
+        int temp2 = 0;
 
-
-    public String toString() {
-
-        return returnString(this.ticketData);
-    }
-    public static String returnString(ArrayList<Ticket> tickets) {
-        return (Arrays.stream(Ticket.class.getDeclaredFields()).map(data -> data.getName() + "\t\t").collect(Collectors.joining())
-                + "\n" + "-".repeat(109) +
-                tickets.stream().map(t -> "\n" + t).collect(Collectors.joining()));
-
+        for (int i = 0; i < ticketsFile.getFile().length(); i += ticketsFile.getGenerator().recordSize()) {
+            temp = ticketsFile.fixStringToRead(i);
+            if(Integer.parseInt(temp) >=  temp2){
+                temp2 = Integer.parseInt(temp);
+            }
+        }
+        return temp2 + 1;
     }
 }
